@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { StyleSheet, View, Text, Button, Alert } from "react-native";
 import { Card } from "../components/Card";
+import { MainButton } from "../components/MainButton";
 import { NumberContainer } from "../components/NumberContainer";
 import defaultStyles from "../constants/default-styles";
 
@@ -63,18 +64,21 @@ export const GameScreen = ({ userChoice, onGameOver }) => {
       <Text style={defaultStyles.bodyText}>Opponent's Guess:</Text>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card style={styles.buttonContainer}>
-        <Button
-          title="LOWER"
+        <MainButton
           onPress={() => {
             nextGuessHandler("lower");
           }}
-        />
-        <Button
-          title="GREATER"
+        >
+          LOWER
+        </MainButton>
+
+        <MainButton
           onPress={() => {
             nextGuessHandler("greater");
           }}
-        />
+        >
+          GREATER
+        </MainButton>
       </Card>
     </View>
   );
@@ -90,7 +94,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     marginTop: 20,
-    width: 300,
-    maxWidth: "80%",
+    width: 400,
+    maxWidth: "90%",
   },
 });
