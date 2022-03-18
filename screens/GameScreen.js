@@ -1,5 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { StyleSheet, View, Text, ScrollView, Alert } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  Alert,
+  Dimensions,
+} from "react-native";
 import { Card } from "../components/Card";
 import { MainButton } from "../components/MainButton";
 import { NumberContainer } from "../components/NumberContainer";
@@ -77,6 +84,8 @@ export const GameScreen = ({ userChoice, onGameOver }) => {
           onPress={() => {
             nextGuessHandler("lower");
           }}
+          buttonStyle={styles.button}
+          textStyle={styles.buttonText}
         >
           LOWER
         </MainButton>
@@ -85,6 +94,8 @@ export const GameScreen = ({ userChoice, onGameOver }) => {
           onPress={() => {
             nextGuessHandler("greater");
           }}
+          buttonStyle={styles.button}
+          textStyle={styles.buttonText}
         >
           GREATER
         </MainButton>
@@ -109,13 +120,19 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginTop: 20,
-    width: 400,
-    maxWidth: "90%",
+    marginTop: Dimensions.get("window").height > 600 ? 20 : 10,
+    width: "95%",
+    maxWidth: 400,
   },
   listContainer: {
     flex: 1,
-    width: "80%",
+    width: Dimensions.get("window").width > 350 ? "60%" : "80%",
+  },
+  button: {
+    width: 120,
+  },
+  buttonText: {
+    fontSize: Dimensions.get("window").width > 420 ? 14 : 12,
   },
   list: {
     flexGrow: 1,
@@ -130,6 +147,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "60%",
+    width: "100%",
   },
 });

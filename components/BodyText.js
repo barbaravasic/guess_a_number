@@ -1,8 +1,8 @@
 import React from "react";
 import { Text, StyleSheet } from "react-native";
 
-export const BodyText = ({ children }) => {
-  return <Text style={styles.body}>{children}</Text>;
+export const BodyText = ({ children, style }) => {
+  return <Text style={{ ...styles.body, ...style }}>{children}</Text>;
 };
 
 const styles = StyleSheet.create({
