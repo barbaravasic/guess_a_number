@@ -14,9 +14,9 @@ import defaultStyles from "../constants/default-styles";
 
 import { BodyText } from "../components/BodyText";
 const generateRandomBetween = (min, max, exclude) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  const rndNumber = Math.floor(Math.random() * (max - min));
+  const minVal = Math.ceil(min);
+  const maxVal = Math.floor(max);
+  const rndNumber = Math.floor(Math.random() * (max - min) + min);
 
   if (rndNumber === exclude) {
     return generateRandomBetween(min, max, exclude);
@@ -39,6 +39,24 @@ export const GameScreen = ({ userChoice, onGameOver }) => {
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
 
   const [pastGuesses, setPastGuesses] = useState([initialGuess]);
+  const [availableDeviceWidth, setAvailableDeviceWidth] = useState(
+    Dimensions.get("window").width
+  );
+  const [availableDeviceHeight, setAvailableDeviceHeight] = useState(
+    Dimensions.get("window").height
+  );
+
+  useEffect(() => {
+    const updateLayout = () => {
+      setAvailableDeviceHeight(Dimensions.get("window").height);
+      setAvailableDeviceWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateLayout);
+
+    return () => {
+      subscription?.remove();
+    };
+  }, []);
 
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
@@ -75,17 +93,70 @@ export const GameScreen = ({ userChoice, onGameOver }) => {
     setPastGuesses((prevGuesses) => [nextNumber, ...prevGuesses]);
   };
 
+  if (availableDeviceHeight < 450) {
+    return (
+      <View style={styles.screen}>
+        <Text style={defaultStyles.bodyText}>Opponent's Guess:</Text>
+        <View style={styles.controls}>
+          <MainButton
+            onPress={() => {
+              nextGuessHandler("lower");
+            }}
+            buttonStyle={availableDeviceHeight > 450 ? 120 : 130}
+            textStyle={{
+              fontSize: availableDeviceWidth > 420 ? 14 : 12,
+            }}
+          >
+            LOWER
+          </MainButton>
+          <NumberContainer>{currentGuess}</NumberContainer>
+
+          <MainButton
+            onPress={() => {
+              nextGuessHandler("greater");
+            }}
+            buttonStyle={availableDeviceHeight > 450 ? 120 : 130}
+            textStyle={{
+              fontSize: availableDeviceWidth > 420 ? 14 : 12,
+            }}
+          >
+            GREATER
+          </MainButton>
+        </View>
+        <View
+          style={{
+            ...styles.listContainer,
+            width: availableDeviceWidth > 350 ? "60%" : "80%",
+          }}
+        >
+          <ScrollView contentContainerStyle={styles.list}>
+            {pastGuesses.map((guess, index) =>
+              renderListItem(guess, pastGuesses.length - index)
+            )}
+          </ScrollView>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.screen}>
       <Text style={defaultStyles.bodyText}>Opponent's Guess:</Text>
       <NumberContainer>{currentGuess}</NumberContainer>
-      <Card style={styles.buttonContainer}>
+      <Card
+        style={{
+          ...styles.buttonContainer,
+          marginTop: availableDeviceHeight > 600 ? 20 : 10,
+        }}
+      >
         <MainButton
           onPress={() => {
             nextGuessHandler("lower");
           }}
-          buttonStyle={styles.button}
-          textStyle={styles.buttonText}
+          buttonStyle={availableDeviceHeight > 450 ? 120 : 130}
+          textStyle={{
+            fontSize: availableDeviceWidth > 420 ? 14 : 12,
+          }}
         >
           LOWER
         </MainButton>
@@ -94,13 +165,20 @@ export const GameScreen = ({ userChoice, onGameOver }) => {
           onPress={() => {
             nextGuessHandler("greater");
           }}
-          buttonStyle={styles.button}
-          textStyle={styles.buttonText}
+          buttonStyle={availableDeviceHeight > 450 ? 120 : 130}
+          textStyle={{
+            fontSize: availableDeviceWidth > 420 ? 14 : 12,
+          }}
         >
           GREATER
         </MainButton>
       </Card>
-      <View style={styles.listContainer}>
+      <View
+        style={{
+          ...styles.listContainer,
+          width: availableDeviceWidth > 350 ? "60%" : "80%",
+        }}
+      >
         <ScrollView contentContainerStyle={styles.list}>
           {pastGuesses.map((guess, index) =>
             renderListItem(guess, pastGuesses.length - index)
@@ -120,19 +198,20 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginTop: Dimensions.get("window").height > 600 ? 20 : 10,
     width: "95%",
     maxWidth: 400,
   },
   listContainer: {
     flex: 1,
-    width: Dimensions.get("window").width > 350 ? "60%" : "80%",
   },
   button: {
     width: 120,
   },
-  buttonText: {
-    fontSize: Dimensions.get("window").width > 420 ? 14 : 12,
+  controls: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "80%",
+    alignItems: "center",
   },
   list: {
     flexGrow: 1,
