@@ -31,10 +31,10 @@ export const StartGameScreen = ({ onStartGame }) => {
     const updateLayout = () => {
       setButtonWidth(Dimensions.get("window").width / 4);
     };
-    const subscription = Dimensions.addEventListener("change", updateLayout);
+    Dimensions.addEventListener("change", updateLayout);
 
     return () => {
-      subscription?.remove();
+      Dimensions.removeEventListener("change", updateLayout);
     };
   }, []);
 

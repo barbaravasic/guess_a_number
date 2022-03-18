@@ -1,15 +1,42 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Dimensions, Image, ScrollView } from "react-native";
 import { BodyText } from "../components/BodyText";
 import { MainButton } from "../components/MainButton";
 import { TitleText } from "../components/TitleText";
 
 export const GameOverScreen = ({ roundsNum, userNum, onStartNewGame }) => {
+  const [deviceWidth, setDeviceWidth] = useState(
+    Dimensions.get("window").width
+  );
+  const [deviceHeight, setDeviceHeight] = useState(
+    Dimensions.get("window").height
+  );
+
+  useEffect(() => {
+    const updateLayout = () => {
+      setDeviceWidth(Dimensions.get("window").width);
+      setDeviceHeight(Dimensions.get("window").height);
+    };
+    Dimensions.addEventListener("change", updateLayout);
+
+    return () => {
+      Dimensions.removeEventListener("change", updateLayout);
+    };
+  }, []);
+
   return (
     <ScrollView>
       <View style={styles.screen}>
         <TitleText>The Game is Over!</TitleText>
-        <View style={styles.imageContainer}>
+        <View
+          style={{
+            ...styles.imageContainer,
+            width: deviceWidth * 0.7,
+            height: deviceWidth * 0.7,
+            marginVertical: deviceHeight / 20,
+            borderRadius: (deviceWidth * 0.7) / 2,
+          }}
+        >
           <Image
             style={styles.image}
             source={{
@@ -39,12 +66,8 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   imageContainer: {
-    borderRadius: 150,
     borderWidth: 3,
-    borderColor: "black",
-    width: Dimensions.get("window").width * 0.7,
-    height: Dimensions.get("window").width * 0.7,
     overflow: "hidden",
-    marginVertical: Dimensions.get("window").height / 20,
+    borderColor: "black",
   },
 });

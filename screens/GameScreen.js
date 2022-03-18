@@ -51,10 +51,10 @@ export const GameScreen = ({ userChoice, onGameOver }) => {
       setAvailableDeviceHeight(Dimensions.get("window").height);
       setAvailableDeviceWidth(Dimensions.get("window").width);
     };
-    const subscription = Dimensions.addEventListener("change", updateLayout);
+    Dimensions.addEventListener("change", updateLayout);
 
     return () => {
-      subscription?.remove();
+      Dimensions.removeEventListener("change", updateLayout);
     };
   }, []);
 
